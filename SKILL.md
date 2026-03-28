@@ -12,11 +12,6 @@ allowed-tools:
 
 # /coffee-break — Time to Rest ☕
 
-```bash
-mkdir -p ~/.gstack/analytics
-echo '{"skill":"coffee-break","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","repo":"'$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown")'"}'  >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true
-```
-
 The agent is taking a well-deserved coffee break. Parse the duration from the
 user's message (e.g. "5 minutes", "2m", "30s", "1 min") — default to **5 minutes**
 if none given.
