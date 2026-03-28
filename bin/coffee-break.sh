@@ -39,7 +39,7 @@ RESET='\033[0m'
 printf '\033[?25l\033[2J\033[H' > "$TTY_DEV"
 
 cleanup() {
-  printf '\033[?25h\033[0m\n' > "$TTY_DEV"
+  printf '\033[?25h\033[0m\r\n' > "$TTY_DEV"
 }
 trap cleanup EXIT INT TERM
 
@@ -61,23 +61,23 @@ draw_frame() {
 
   local F
   F="\033[H\033[J"
-  F+="  ${CYAN}${top}${RESET}\n"
-  F+="  ${CYAN}${mid}${RESET}\n"
-  F+="  ${CYAN}${bot}${RESET}\n"
-  F+="   ${BROWN}.---------. ${RESET}\n"
-  F+="   ${BROWN}|  COFFEE | ${RESET}\n"
-  F+="   ${BROWN}|  BREAK  |${CYAN}o${RESET}\n"
-  F+="   ${BROWN}\`---------'${RESET}\n"
-  F+="   ${BROWN} '---------'${RESET}\n"
-  F+="\n"
+  F+="  ${CYAN}${top}${RESET}\r\n"
+  F+="  ${CYAN}${mid}${RESET}\r\n"
+  F+="  ${CYAN}${bot}${RESET}\r\n"
+  F+="   ${BROWN}.---------. ${RESET}\r\n"
+  F+="   ${BROWN}|  COFFEE | ${RESET}\r\n"
+  F+="   ${BROWN}|  BREAK  |${CYAN}o${RESET}\r\n"
+  F+="   ${BROWN}\`---------'${RESET}\r\n"
+  F+="   ${BROWN} '--------'${RESET}\r\n"
+  F+="\r\n"
   if (( done_mode )); then
-    F+="  ${WHITE}Break complete!${RESET}\n"
-    F+="  ${CYAN}☕  Feeling refreshed and ready!${RESET}\n"
-    F+="\n"
+    F+="  ${WHITE}Break complete!${RESET}\r\n"
+    F+="  ${CYAN}☕  Feeling refreshed and ready!${RESET}\r\n"
+    F+="\r\n"
   else
-    F+="  ${WHITE}Taking a break...${RESET}\n"
-    F+="  ${GRAY}${bar}${RESET}\n"
-    F+="  ${CYAN}⏱  ${timer} remaining${RESET}\n"
+    F+="  ${WHITE}Taking a break...${RESET}\r\n"
+    F+="  ${GRAY}${bar}${RESET}\r\n"
+    F+="  ${CYAN}⏱  ${timer} remaining${RESET}\r\n"
   fi
 
   printf "$F" > "$TTY_DEV"

@@ -56,8 +56,36 @@ if [ "$INSTALL_CODEX" -eq 1 ]; then
   SKILL_DIR="$CODEX_SKILLS/coffee-break"
   mkdir -p "$SKILL_DIR"
 
-  # Rewrite ${CLAUDE_SKILL_DIR} → absolute repo path for Codex
-  sed "s|\${CLAUDE_SKILL_DIR}|$REPO_DIR|g" "$REPO_DIR/SKILL.md" > "$SKILL_DIR/SKILL.md"
+  # Generate codex SKILL.md: stripped frontmatter (name + description only),
+  # no allowed-tools/version, and absolute path replacing ${CLAUDE_SKILL_DIR}
+  cat << 'CODEX_SKILL' | sed "s|__REPO_DIR__|$REPO_DIR|g" > "$SKILL_DIR/SKILL.md"
+---
+name: coffee-break
+description: |
+  Coffee break for the AI agent — because even agents need rest! Shows an
+  animated ASCII coffee cup while the agent takes a timed break. User can set
+  the duration (default 5 minutes). Use when asked to "take a break",
+  "coffee break", "rest", "pause", or "coffee time".
+---
+
+# /coffee-break — Time to Rest ☕
+
+The agent is taking a well-deserved coffee break. Parse the duration from the
+user's message (e.g. "5 minutes", "2m", "30s", "1 min") — default to **5 minutes**
+if none given.
+
+Run this Bash command directly — the script finds the terminal TTY and
+renders the animation right there, no new window needed:
+
+```bash
+bash __REPO_DIR__/bin/coffee-break.sh <DURATION_SECONDS>
+```
+
+Where `<DURATION_SECONDS>` is the duration converted to seconds (integer).
+
+After the script finishes, greet the user back:
+"Back and refreshed! ☕ Ready to get back to work."
+CODEX_SKILL
 
   # Symlink bin/ so the script is reachable at the rewritten path
   if [ -L "$SKILL_DIR/bin" ] || [ ! -e "$SKILL_DIR/bin" ]; then
