@@ -8,13 +8,25 @@ A Claude Code skill that gives the AI agent a timed coffee break — complete wi
 
 ## Installation
 
-Clone this repo into Claude Code's skills directory:
+### Claude Code
 
 ```bash
 git clone https://github.com/zondatw/coffee-break ~/.claude/skills/coffee-break
 ```
 
-That's it — Claude Code will discover the skill automatically on the next session. No restart required if you're already in a session; just open a new one.
+### Codex
+
+```bash
+git clone https://github.com/zondatw/coffee-break
+cd coffee-break && ./setup --host codex
+```
+
+### Auto-detect (installs for whichever CLIs are available)
+
+```bash
+git clone https://github.com/zondatw/coffee-break
+cd coffee-break && ./setup
+```
 
 ## Usage
 
