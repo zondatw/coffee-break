@@ -39,16 +39,6 @@ The agent parses natural duration formats (`5 minutes`, `2m`, `30s`, `1 min`) an
 
 The animation renders in Claude Code's own terminal window — no new window or tab is opened.
 
-## Files
-
-```
-bin/
-  coffee-break.sh   # Main animation script (bash)
-  launch.py         # PTY launcher for correct cursor rendering
-SKILL.md            # Claude Code skill definition
-SKILL.md.tmpl       # Skill template source
-```
-
 ## How it works
 
 `coffee-break.sh` walks up the process tree from its PID to find the parent terminal's TTY device, then writes ANSI escape codes and animation frames directly to it. This lets the animation appear in Claude Code's terminal even though Claude itself is running as a subprocess. A Python PTY wrapper (`launch.py`) is available for cases where a real pseudo-terminal is needed.
