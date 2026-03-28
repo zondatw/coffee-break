@@ -2,6 +2,16 @@
 
 A Claude Code skill that gives the AI agent a timed coffee break — complete with an animated ASCII coffee cup right in your terminal.
 
+## Installation
+
+Clone this repo into Claude Code's skills directory:
+
+```bash
+git clone https://github.com/zondatw/coffee-break ~/.claude/skills/coffee-break
+```
+
+That's it — Claude Code will discover the skill automatically on the next session. No restart required if you're already in a session; just open a new one.
+
 ## Usage
 
 ```
