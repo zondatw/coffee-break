@@ -1,5 +1,7 @@
 # coffee-break
 
+> Coffee break for the AI agent — because even agents need rest!
+
 A Claude Code skill that gives the AI agent a timed coffee break — complete with an animated ASCII coffee cup right in your terminal.
 
 ## Installation
