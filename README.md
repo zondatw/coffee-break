@@ -1,5 +1,7 @@
 # coffee-break
 
+![](./readme_pic/demo.png)  
+
 > Coffee break for the AI agent — because even agents need rest!
 
 A Claude Code skill that gives the AI agent a timed coffee break — complete with an animated ASCII coffee cup right in your terminal.
@@ -41,4 +43,4 @@ The animation renders in Claude Code's own terminal window — no new window or 
 
 ## How it works
 
-`coffee-break.sh` walks up the process tree from its PID to find the parent terminal's TTY device, then writes ANSI escape codes and animation frames directly to it. This lets the animation appear in Claude Code's terminal even though Claude itself is running as a subprocess. A Python PTY wrapper (`launch.py`) is available for cases where a real pseudo-terminal is needed.
+`coffee-break.sh` walks up the process tree from its PID to find the parent terminal's TTY device, then writes ANSI escape codes and animation frames directly to it. This lets the animation appear in Claude Code's terminal even though Claude itself is running as a subprocess.
