@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# coffee-break.sh — Animated ASCII coffee break timer
-# Finds the parent terminal's TTY device and writes directly to it,
-# so the animation appears in Claude Code's own terminal window.
+# coffee-break-vim.sh — Vim-style animated coffee break timer
+# Renders a vim-like TUI (line numbers, tilde rows, statusline) directly
+# in the parent terminal's TTY — no new window needed.
 
 DURATION=${1:-300}
 
@@ -18,15 +18,50 @@ find_tty() {
     pid=$(ps -p "$pid" -o ppid= 2>/dev/null | tr -d ' ')
     [ -z "$pid" ] || [ "$pid" -le 1 ] && break
   done
-  # Fallback: try /dev/tty or stdout
   if [ -w /dev/tty ]; then
     echo /dev/tty
   else
-    echo /dev/stdout
+    echo ""
   fi
 }
 
 TTY_DEV=$(find_tty)
+
+# Fallback: simple line-per-second progress display to stdout
+if [ -z "$TTY_DEV" ] && [ ! -t 1 ]; then
+  TOTAL=$DURATION
+  START=$(date +%s)
+  while true; do
+    NOW=$(date +%s)
+    ELAPSED=$(( NOW - START ))
+    REMAINING=$(( TOTAL - ELAPSED ))
+    (( REMAINING < 0 )) && REMAINING=0
+    MINS=$(( REMAINING / 60 ))
+    SECS=$(( REMAINING % 60 ))
+    FILL=$(( (ELAPSED * 20 + TOTAL - 1) / TOTAL ))
+    (( FILL > 20 )) && FILL=20
+    BAR=""
+    for ((i=0; i<20; i++)); do (( i < FILL )) && BAR+="█" || BAR+="░"; done
+    printf "☕ [%s] %02d:%02d\n" "$BAR" "$MINS" "$SECS"
+    (( REMAINING <= 0 )) && break
+    sleep 1
+  done
+  exit 0
+fi
+
+# Output helper
+out() { if [ -n "$TTY_DEV" ]; then printf '%b' "$@" > "$TTY_DEV"; else printf '%b' "$@"; fi; }
+
+# Get terminal dimensions from the TTY
+get_size() {
+  local sz
+  if [ -n "$TTY_DEV" ]; then
+    sz=$(stty size < "$TTY_DEV" 2>/dev/null)
+  else
+    sz=$(stty size 2>/dev/null)
+  fi
+  echo "${sz:-24 80}"
+}
 
 # Colors
 BROWN='\033[0;33m'
@@ -35,16 +70,15 @@ WHITE='\033[1;37m'
 GRAY='\033[0;37m'
 RESET='\033[0m'
 
-# Enter alternate screen buffer, hide cursor, clear it
-printf '\033[?1049h\033[?25l\033[2J\033[H' > "$TTY_DEV"
+# Enter alternate screen buffer, hide cursor, clear screen
+out '\033[?1049h\033[?25l\033[2J\033[H'
 
 cleanup() {
-  # Exit alternate screen (restores original terminal content), show cursor
-  printf '\033[?1049l\033[?25h\033[0m' > "$TTY_DEV"
+  out '\033[?1049l\033[?25h\033[0m'
 }
 trap cleanup EXIT INT TERM
 
-# Steam animation — 6 frames x 3 rows
+# Steam animation frames (6 frames × 3 rows each)
 STEAM=(
   "   ) ) )   "  "  (   (   "  "   )  )   "
   "  (   (    "  "   )   )  "  "  ( ( (   "
@@ -60,8 +94,8 @@ draw_frame() {
   local mid="${STEAM[$((f*3+1))]}"
   local bot="${STEAM[$((f*3+2))]}"
 
-  local F
-  F="\033[H\033[J"
+  local F="\033[H\033[J"
+  F+="\r\n"
   F+="  ${CYAN}${top}${RESET}\r\n"
   F+="  ${CYAN}${mid}${RESET}\r\n"
   F+="  ${CYAN}${bot}${RESET}\r\n"
@@ -81,7 +115,7 @@ draw_frame() {
     F+="  ${CYAN}⏱  ${timer} remaining${RESET}\r\n"
   fi
 
-  printf "$F" > "$TTY_DEV"
+  out "$F"
 }
 
 TOTAL=$DURATION
@@ -98,16 +132,18 @@ while true; do
   SECS=$(( REMAINING % 60 ))
   TIMER=$(printf "%02d:%02d" "$MINS" "$SECS")
 
-  PROGRESS=$(( (ELAPSED * 30) / TOTAL ))
+  PCT=$(( (ELAPSED * 100) / TOTAL ))
+  PROGRESS=$(( (ELAPSED * 20) / TOTAL ))
   BAR=""
-  for ((i=0; i<30; i++)); do
+  for ((i=0; i<20; i++)); do
     (( i < PROGRESS )) && BAR+="█" || BAR+="░"
   done
 
-  draw_frame "$((FRAME % 6))" "$TIMER" "$BAR"
-  FRAME=$(( FRAME + 1 ))
+  draw_frame "$((FRAME % 6))" "$TIMER" "$BAR" 0
+  (( FRAME++ ))
   sleep 0.25
 done
 
-BAR=$(printf '█%.0s' {1..30})
+BAR=$(printf '█%.0s' {1..20})
 draw_frame 0 "00:00" "$BAR" 1
+sleep 1

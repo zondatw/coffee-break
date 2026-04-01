@@ -57,7 +57,8 @@ if [ "$INSTALL_CODEX" -eq 1 ]; then
   mkdir -p "$SKILL_DIR"
 
   # Generate codex SKILL.md: stripped frontmatter (name + description only),
-  # no allowed-tools/version, and absolute path replacing ${CLAUDE_SKILL_DIR}
+  # no allowed-tools/version, and absolute path replacing ${CLAUDE_SKILL_DIR}.
+  # Codex uses the classic animation (coffee-break-original.sh).
   cat << 'CODEX_SKILL' | sed "s|__REPO_DIR__|$REPO_DIR|g" > "$SKILL_DIR/SKILL.md"
 ---
 name: coffee-break
@@ -78,7 +79,7 @@ Run this Bash command directly — the script finds the terminal TTY and
 renders the animation right there, no new window needed:
 
 ```bash
-bash __REPO_DIR__/bin/coffee-break.sh <DURATION_SECONDS>
+bash __REPO_DIR__/bin/coffee-break-original.sh <DURATION_SECONDS>
 ```
 
 Where `<DURATION_SECONDS>` is the duration converted to seconds (integer).
