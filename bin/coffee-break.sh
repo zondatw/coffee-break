@@ -35,11 +35,12 @@ WHITE='\033[1;37m'
 GRAY='\033[0;37m'
 RESET='\033[0m'
 
-# Hide cursor, clear screen
-printf '\033[?25l\033[2J\033[H' > "$TTY_DEV"
+# Enter alternate screen buffer, hide cursor, clear it
+printf '\033[?1049h\033[?25l\033[2J\033[H' > "$TTY_DEV"
 
 cleanup() {
-  printf '\033[?25h\033[0m\r\n' > "$TTY_DEV"
+  # Exit alternate screen (restores original terminal content), show cursor
+  printf '\033[?1049l\033[?25h\033[0m' > "$TTY_DEV"
 }
 trap cleanup EXIT INT TERM
 
