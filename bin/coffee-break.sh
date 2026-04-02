@@ -120,7 +120,10 @@ draw_frame() {
 
 TOTAL=$DURATION
 START=$(date +%s)
-FRAME=0
+TICK=0
+STEAM_FRAME=0
+# Advance steam frame every 6 ticks (6 × 0.04s = 0.24s ≈ original 4 FPS)
+STEAM_TICKS=6
 
 while true; do
   NOW=$(date +%s)
@@ -139,9 +142,10 @@ while true; do
     (( i < PROGRESS )) && BAR+="█" || BAR+="░"
   done
 
-  draw_frame "$((FRAME % 6))" "$TIMER" "$BAR" 0
-  (( FRAME++ ))
-  sleep 0.25
+  draw_frame "$((STEAM_FRAME % 6))" "$TIMER" "$BAR" 0
+  (( TICK++ ))
+  (( TICK % STEAM_TICKS == 0 )) && (( STEAM_FRAME++ ))
+  sleep 0.04
 done
 
 BAR=$(printf '█%.0s' {1..20})
