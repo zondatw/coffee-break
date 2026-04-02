@@ -25,5 +25,13 @@ bash ${CLAUDE_SKILL_DIR}/bin/coffee-break.sh <DURATION_SECONDS>
 
 Where `<DURATION_SECONDS>` is the duration converted to seconds (integer).
 
-After the script finishes, greet the user back:
+**Fallback:** If the command above exits with a non-zero status or produces no
+visible output due to TTY permission issues, immediately retry with the original
+script instead:
+
+```bash
+bash ${CLAUDE_SKILL_DIR}/bin/coffee-break-original.sh <DURATION_SECONDS>
+```
+
+After the script finishes (either version), greet the user back:
 "Back and refreshed! ☕ Ready to get back to work."
