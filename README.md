@@ -9,8 +9,8 @@ A skill for AI coding agents — gives the agent a timed coffee break complete w
 ## Installation
 
 ```bash
-git clone https://github.com/zondatw/coffee-break
-cd coffee-break && ./setup
+git clone  --single-branch --depth 1 https://github.com/zondatw/coffee-break .agents/skills/coffee-break
+cd .agents/skills/coffee-break && ./setup
 ```
 
 `./setup` auto-detects which CLIs are installed. You can also target a specific host:
